@@ -1,0 +1,31 @@
+
+structextDoc	::= statement*
+statement	::= baseConceptTerm 
+baseConceptTerm	::= concept (hasa conceptTerm?)* (whichis conceptTerm (',' conceptTerm)* whichisEnd)?
+conceptTerm	::= concept ('('TAG')')? (hasa conceptTerm?)* (whichis conceptTerm (',' conceptTerm)* whichisEnd)?
+hasa		::= '-' | '--' | '+' | '++'
+whichis         ::= '['
+whichisEnd      ::= ']'
+
+concept		::= (expressionTerm ('|' expressionTerm)*)? TAG?
+expressionTerm	::= (expression ('{'concept'}')?)
+expression	::= Text | Number | Boolean | MIME | iri /* TBD MIME  */
+
+Text 		::= '"' ([^#x22#x5C#xA#xD] | ECHAR | UCHAR)* '"' /* TBD Quote not required unless [ } - + etc  */
+Number		::= INTEGER | DECIMAL | DOUBLE
+Boolean		::= 'true' | 'false'
+iri		::= IRIREF 
+
+TAG 		::= '#'[a-zA-Z0-9]+ ('-' [a-zA-Z0-9]+)*
+
+INTEGER		::= [+-]? [0-9]+
+DECIMAL		::= [+-]? [0-9]* '.' [0-9]+
+DOUBLE		::= [+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
+EXPONENT	::= [eE] [+-]? [0-9]+
+IRIREF		::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>' /* #x00=NULL #01-#x1F=control codes #x20=space */
+UCHAR		::= '\u' HEX HEX HEX HEX | '\U' HEX HEX HEX HEX HEX HEX HEX HEX
+HEX		::= [0-9] | [A-F] | [a-f]
+
+
+
+
